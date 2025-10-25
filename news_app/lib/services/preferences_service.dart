@@ -39,4 +39,14 @@ class PreferencesService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_sortKey, option);
   }
+
+  Future<String> getLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('language') ?? 'en';
+  }
+
+  Future<void> saveLanguage(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language', languageCode);
+  }
 }

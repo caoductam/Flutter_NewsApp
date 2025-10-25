@@ -1,245 +1,20 @@
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import '../models/article.dart';
-// import '../services/news_service.dart';
-// import 'detail_screen.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({Key? key}) : super(key: key);
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   final NewsService _newsService = NewsService();
-//   final TextEditingController _searchController = TextEditingController();
-//   late Future<List<Article>> _articlesFuture;
-//   bool _isSearching = false;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _articlesFuture = _newsService.fetchTopHeadlines();
-//   }
-
-//   void _performSearch(String query) {
-//     if (query.isEmpty) {
-//       setState(() {
-//         _articlesFuture = _newsService.fetchTopHeadlines();
-//         _isSearching = false;
-//       });
-//     } else {
-//       setState(() {
-//         _articlesFuture = _newsService.searchNews(query);
-//         _isSearching = true;
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('News Reader'),
-//         backgroundColor: Colors.blue,
-//         foregroundColor: Colors.white,
-//         bottom: PreferredSize(
-//           preferredSize: const Size.fromHeight(60),
-//           child: Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextField(
-//               controller: _searchController,
-//               decoration: InputDecoration(
-//                 hintText: 'Search news...',
-//                 filled: true,
-//                 fillColor: Colors.white,
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(10),
-//                   borderSide: BorderSide.none,
-//                 ),
-//                 prefixIcon: const Icon(Icons.search),
-//                 suffixIcon: _isSearching
-//                     ? IconButton(
-//                         icon: const Icon(Icons.clear),
-//                         onPressed: () {
-//                           _searchController.clear();
-//                           _performSearch('');
-//                         },
-//                       )
-//                     : null,
-//               ),
-//               onSubmitted: _performSearch,
-//             ),
-//           ),
-//         ),
-//       ),
-//       body: FutureBuilder<List<Article>>(
-//         future: _articlesFuture,
-//         builder: (context, snapshot) {
-//           // Đang tải dữ liệu
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-
-//           // Có lỗi xảy ra
-//           if (snapshot.hasError) {
-//             return Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   const Icon(Icons.error_outline, size: 60, color: Colors.red),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     'Error: ${snapshot.error}',
-//                     textAlign: TextAlign.center,
-//                     style: const TextStyle(color: Colors.red),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   ElevatedButton(
-//                     onPressed: () {
-//                       setState(() {
-//                         _articlesFuture = _newsService.fetchTopHeadlines();
-//                       });
-//                     },
-//                     child: const Text('Retry'),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           }
-
-//           // Không có dữ liệu
-//           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//             return const Center(child: Text('No articles found'));
-//           }
-
-//           // Hiển thị danh sách tin tức
-//           final articles = snapshot.data!;
-//           return RefreshIndicator(
-//             onRefresh: () async {
-//               setState(() {
-//                 _articlesFuture = _isSearching
-//                     ? _newsService.searchNews(_searchController.text)
-//                     : _newsService.fetchTopHeadlines();
-//               });
-//             },
-//             child: ListView.builder(
-//               itemCount: articles.length,
-//               itemBuilder: (context, index) {
-//                 return _buildArticleCard(articles[index]);
-//               },
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-
-//   Widget _buildArticleCard(Article article) {
-//     final dateFormat = DateFormat('MMM dd, yyyy - HH:mm');
-//     String formattedDate = '';
-
-//     try {
-//       final date = DateTime.parse(article.publishedAt);
-//       formattedDate = dateFormat.format(date);
-//     } catch (e) {
-//       formattedDate = article.publishedAt;
-//     }
-
-//     return Card(
-//       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//       elevation: 2,
-//       child: InkWell(
-//         onTap: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => DetailScreen(article: article),
-//             ),
-//           );
-//         },
-//         child: Padding(
-//           padding: const EdgeInsets.all(12),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // Hình ảnh
-//               ClipRRect(
-//                 borderRadius: BorderRadius.circular(8),
-//                 child: article.urlToImage != null
-//                     ? Image.network(
-//                         article.urlToImage!,
-//                         width: 100,
-//                         height: 100,
-//                         fit: BoxFit.cover,
-//                         errorBuilder: (context, error, stackTrace) {
-//                           return _buildPlaceholderImage();
-//                         },
-//                       )
-//                     : _buildPlaceholderImage(),
-//               ),
-//               const SizedBox(width: 12),
-//               // Nội dung
-//               Expanded(
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       article.title,
-//                       style: const TextStyle(
-//                         fontSize: 16,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                       maxLines: 3,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                     const SizedBox(height: 8),
-//                     if (article.author != null)
-//                       Text(
-//                         article.author!,
-//                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-//                       ),
-//                     const SizedBox(height: 4),
-//                     Text(
-//                       formattedDate,
-//                       style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildPlaceholderImage() {
-//     return Container(
-//       width: 100,
-//       height: 100,
-//       color: Colors.grey[300],
-//       child: const Icon(Icons.article, size: 40, color: Colors.grey),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _searchController.dispose();
-//     super.dispose();
-//   }
-// }
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/article.dart';
 import '../models/sort_option.dart';
 import '../services/news_service.dart';
 import '../services/preferences_service.dart';
 import '../providers/theme_provider.dart';
+import '../providers/news_provider.dart';
+import '../providers/bookmark_provider.dart';
+import '../providers/offline_provider.dart';
 import 'detail_screen.dart';
+import 'bookmarks_screen.dart';
+import 'offline_screen.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -250,16 +25,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final NewsService _newsService = NewsService();
   final PreferencesService _prefsService = PreferencesService();
   final TextEditingController _searchController = TextEditingController();
 
-  late Future<List<Article>> _articlesFuture;
-  List<Article> _currentArticles = [];
-
   String _selectedCategory = 'general';
   SortOption _sortOption = SortOption.newest;
-  bool _isSearching = false;
+  List<Article> _currentArticles = [];
 
   @override
   void initState() {
@@ -274,44 +45,32 @@ class _HomeScreenState extends State<HomeScreen> {
       (e) => e.name == sortString,
       orElse: () => SortOption.newest,
     );
-    _loadNews();
-  }
 
-  void _loadNews() {
-    setState(() {
-      _articlesFuture = _newsService.fetchByCategory(_selectedCategory);
-    });
+    // Load news
+    if (mounted) {
+      context.read<NewsProvider>().fetchNews(category: _selectedCategory);
+    }
   }
 
   void _performSearch(String query) {
-    if (query.isEmpty) {
-      setState(() {
-        _isSearching = false;
-        _loadNews();
-      });
-    } else {
-      setState(() {
-        _isSearching = true;
-        _articlesFuture = _newsService.searchNews(query);
-      });
-    }
+    context.read<NewsProvider>().searchNews(query);
   }
 
   void _changeCategory(String category) async {
     setState(() {
       _selectedCategory = category;
       _searchController.clear();
-      _isSearching = false;
-      _loadNews();
     });
     await _prefsService.saveSelectedCategory(category);
+    if (mounted) {
+      context.read<NewsProvider>().fetchNews(category: category);
+    }
   }
 
   void _changeSortOption(SortOption? option) async {
     if (option != null) {
       setState(() {
         _sortOption = option;
-        // Re-sort current articles
         _sortArticles(_currentArticles);
       });
       await _prefsService.saveSortOption(option.name);
@@ -353,13 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('News Reader'),
+        title: Text(l10n.homeTitle),
         actions: [
-          // Theme toggle button
+          // Theme toggle
           IconButton(
             icon: Icon(
               themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
@@ -367,12 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               themeProvider.toggleTheme();
             },
-            tooltip: 'Toggle theme',
+            tooltip: themeProvider.isDarkMode
+                ? l10n.themeLight
+                : l10n.themeDark,
           ),
-          // Sort button
+          // Sort menu
           PopupMenuButton<SortOption>(
             icon: const Icon(Icons.sort),
-            tooltip: 'Sort articles',
+            tooltip: l10n.settingsDefaultSort,
             onSelected: _changeSortOption,
             itemBuilder: (context) {
               return SortOption.values.map((option) {
@@ -388,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        option.displayName,
+                        _getSortDisplayName(option, l10n),
                         style: TextStyle(
                           fontWeight: _sortOption == option
                               ? FontWeight.bold
@@ -404,6 +166,92 @@ class _HomeScreenState extends State<HomeScreen> {
               }).toList();
             },
           ),
+          // Bookmarks button
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.bookmark),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BookmarksScreen(),
+                    ),
+                  );
+                },
+                tooltip: l10n.bookmarksTitle,
+              ),
+              Consumer<BookmarkProvider>(
+                builder: (context, bookmarkProvider, child) {
+                  if (bookmarkProvider.bookmarksCount == 0) {
+                    return const SizedBox();
+                  }
+                  return Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${bookmarkProvider.bookmarksCount}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          // Offline button
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.offline_pin),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OfflineScreen(),
+                    ),
+                  );
+                },
+                tooltip: l10n.offlineTitle,
+              ),
+              Consumer<OfflineProvider>(
+                builder: (context, offlineProvider, child) {
+                  if (offlineProvider.offlineCount == 0) {
+                    return const SizedBox();
+                  }
+                  return Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${offlineProvider.offlineCount}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
           // Settings button
           IconButton(
             icon: const Icon(Icons.settings),
@@ -413,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
             },
-            tooltip: 'Settings',
+            tooltip: l10n.settingsTitle,
           ),
         ],
         bottom: PreferredSize(
@@ -429,14 +277,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search news...',
+                    hintText: l10n.searchHint,
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                     prefixIcon: const Icon(Icons.search),
-                    suffixIcon: _isSearching
+                    suffixIcon: context.watch<NewsProvider>().isSearching
                         ? IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () {
@@ -449,8 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onSubmitted: _performSearch,
                 ),
               ),
-              // Categories chips
-              if (!_isSearching)
+              // Categories
+              if (!context.watch<NewsProvider>().isSearching)
                 SizedBox(
                   height: 50,
                   child: ListView.builder(
@@ -475,9 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : null,
                               ),
                               const SizedBox(width: 6),
-                              Text(
-                                NewsService.getCategoryDisplayName(category),
-                              ),
+                              Text(_getCategoryDisplayName(category, l10n)),
                             ],
                           ),
                           selected: isSelected,
@@ -501,14 +347,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: FutureBuilder<List<Article>>(
-        future: _articlesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+      body: Consumer<NewsProvider>(
+        builder: (context, newsProvider, child) {
+          if (newsProvider.isLoading) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(l10n.loading),
+                ],
+              ),
+            );
           }
 
-          if (snapshot.hasError) {
+          if (newsProvider.error != null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -516,43 +370,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Icon(Icons.error_outline, size: 60, color: Colors.red),
                   const SizedBox(height: 16),
                   Text(
-                    'Error: ${snapshot.error}',
+                    '${l10n.error}: ${newsProvider.error}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.red),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        _loadNews();
-                      });
+                      newsProvider.refreshNews();
                     },
-                    child: const Text('Retry'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
             );
           }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No articles found'));
+          if (newsProvider.articles.isEmpty) {
+            return Center(child: Text(l10n.noArticlesFound));
           }
 
-          _currentArticles = List.from(snapshot.data!);
+          _currentArticles = List.from(newsProvider.articles);
           _sortArticles(_currentArticles);
 
           return RefreshIndicator(
-            onRefresh: () async {
-              setState(() {
-                if (_isSearching) {
-                  _articlesFuture = _newsService.searchNews(
-                    _searchController.text,
-                  );
-                } else {
-                  _loadNews();
-                }
-              });
-            },
+            onRefresh: () => newsProvider.refreshNews(),
             child: ListView.builder(
               itemCount: _currentArticles.length,
               itemBuilder: (context, index) {
@@ -579,8 +421,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          // Track article view
+          context.read<NewsProvider>().trackArticleView(article);
+
+          // Navigate to detail
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => DetailScreen(article: article),
@@ -592,26 +438,67 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hình ảnh với Hero animation
-              Hero(
-                tag: 'image_${article.url}',
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: article.urlToImage != null
-                      ? Image.network(
-                          article.urlToImage!,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return _buildPlaceholderImage();
-                          },
-                        )
-                      : _buildPlaceholderImage(),
-                ),
+              // Image
+              Stack(
+                children: [
+                  Hero(
+                    tag: 'image_${article.url}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: article.urlToImage != null
+                          ? Image.network(
+                              article.urlToImage!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildPlaceholderImage();
+                              },
+                            )
+                          : _buildPlaceholderImage(),
+                    ),
+                  ),
+                  // Badges
+                  if (article.isBookmarked || article.isOffline)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Column(
+                        children: [
+                          if (article.isBookmarked)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.amber,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.bookmark,
+                                size: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          if (article.isOffline)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              margin: const EdgeInsets.only(top: 4),
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.offline_pin,
+                                size: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(width: 12),
-              // Nội dung
+              // Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -655,6 +542,40 @@ class _HomeScreenState extends State<HomeScreen> {
       color: Colors.grey[300],
       child: const Icon(Icons.article, size: 40, color: Colors.grey),
     );
+  }
+
+  String _getCategoryDisplayName(String category, AppLocalizations l10n) {
+    switch (category) {
+      case 'general':
+        return l10n.categoryGeneral;
+      case 'business':
+        return l10n.categoryBusiness;
+      case 'entertainment':
+        return l10n.categoryEntertainment;
+      case 'health':
+        return l10n.categoryHealth;
+      case 'science':
+        return l10n.categoryScience;
+      case 'sports':
+        return l10n.categorySports;
+      case 'technology':
+        return l10n.categoryTechnology;
+      default:
+        return category;
+    }
+  }
+
+  String _getSortDisplayName(SortOption option, AppLocalizations l10n) {
+    switch (option) {
+      case SortOption.newest:
+        return l10n.sortNewest;
+      case SortOption.oldest:
+        return l10n.sortOldest;
+      case SortOption.titleAZ:
+        return l10n.sortTitleAZ;
+      case SortOption.titleZA:
+        return l10n.sortTitleZA;
+    }
   }
 
   @override

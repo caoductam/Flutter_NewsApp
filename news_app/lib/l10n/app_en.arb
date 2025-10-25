@@ -1,4 +1,76 @@
 {
   "@@locale": "en",
-  "hello": "Hello"
+  "appTitle": "News Reader",
+  "homeTitle": "News Reader",
+  "bookmarksTitle": "Bookmarks",
+  "offlineTitle": "Offline Articles",
+  "settingsTitle": "Settings",
+  
+  "searchHint": "Search news...",
+  "searchBookmarksHint": "Search bookmarks...",
+  "searchOfflineHint": "Search offline articles...",
+  
+  "categoryGeneral": "General",
+  "categoryBusiness": "Business",
+  "categoryEntertainment": "Entertainment",
+  "categoryHealth": "Health",
+  "categoryScience": "Science",
+  "categorySports": "Sports",
+  "categoryTechnology": "Technology",
+  
+  "sortNewest": "Newest First",
+  "sortOldest": "Oldest First",
+  "sortTitleAZ": "Title A-Z",
+  "sortTitleZA": "Title Z-A",
+  
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
+  
+  "loading": "Loading...",
+  "error": "Error",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "delete": "Delete",
+  "share": "Share",
+  "refresh": "Refresh",
+  
+  "noArticlesFound": "No articles found",
+  "noBookmarks": "No Bookmarks Yet",
+  "noBookmarksDesc": "Bookmark articles to read them later",
+  "noOfflineArticles": "No Offline Articles",
+  "noOfflineArticlesDesc": "Save articles for offline reading",
+  
+  "bookmarkAdded": "Article bookmarked",
+  "bookmarkRemoved": "Bookmark removed",
+  "offlineAdded": "Article saved for offline reading",
+  "offlineRemoved": "Article removed from offline storage",
+  
+  "readFullArticle": "Read Full Article",
+  "articleDetails": "Article Details",
+  
+  "settingsAppearance": "Appearance",
+  "settingsDarkMode": "Dark Mode",
+  "settingsLanguage": "Language",
+  "settingsDefaultCategory": "Default Category",
+  "settingsDefaultSort": "Default Sort Order",
+  "settingsAbout": "About",
+  "settingsStorage": "Storage",
+  "settingsClearData": "Clear Data",
+  
+  "confirmClearBookmarks": "Clear all bookmarks?",
+  "confirmClearBookmarksDesc": "This action cannot be undone.",
+  "confirmClearOffline": "Clear all offline articles?",
+  "confirmClearOfflineDesc": "This action cannot be undone.",
+  
+  "storageUsed": "Storage Used",
+  "totalArticles": "Total Articles",
+  "byCategory": "By Category",
+  
+  "undo": "UNDO",
+  "clearAll": "Clear All",
+  
+  "poweredBy": "Powered by NewsAPI.org",
+  "version": "Version 1.0.0"
 }

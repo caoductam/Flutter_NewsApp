@@ -1,37 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/article.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
-class DetailScreen extends StatelessWidget {
+import '../models/article.dart';
+import '../providers/bookmark_provider.dart';
+import '../providers/offline_provider.dart';
+import '../providers/news_provider.dart';
+
+class DetailScreen extends StatefulWidget {
   final Article article;
 
-  const DetailScreen({Key? key, required this.article}) : super(key: key);
+  const DetailScreen({super.key, required this.article});
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  late Article _article;
+
+  @override
+  void initState() {
+    super.initState();
+    _article = widget.article;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat('MMMM dd, yyyy - HH:mm');
     String formattedDate = '';
 
     try {
-      final date = DateTime.parse(article.publishedAt);
+      final date = DateTime.parse(_article.publishedAt);
       formattedDate = dateFormat.format(date);
     } catch (e) {
-      formattedDate = article.publishedAt;
+      formattedDate = _article.publishedAt;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Article Details'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        title: Text(l10n.articleDetails),
         actions: [
-          // Nút Share trên AppBar
+          // Bookmark button
+          Consumer<BookmarkProvider>(
+            builder: (context, bookmarkProvider, child) {
+              final isBookmarked = bookmarkProvider.isBookmarked(_article.url);
+
+              return IconButton(
+                icon: Icon(
+                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                  color: isBookmarked ? Colors.orange : null,
+                ),
+                onPressed: () async {
+                  final added = await bookmarkProvider.toggleBookmark(_article);
+
+                  setState(() {
+                    _article = _article.copyWith(isBookmarked: added);
+                  });
+
+                  // Update in NewsProvider
+                  context.read<NewsProvider>().updateArticleBookmarkStatus(
+                    _article.url,
+                    added,
+                  );
+
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          added ? l10n.bookmarkAdded : l10n.bookmarkRemoved,
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                tooltip: isBookmarked ? 'Remove bookmark' : 'Add bookmark',
+              );
+            },
+          ),
+
+          // Share button
           IconButton(
             icon: const Icon(Icons.share),
-            onPressed: () => _shareArticle(context),
-            tooltip: 'Share article',
+            onPressed: () => _shareArticle(context, l10n),
+            tooltip: l10n.share,
           ),
         ],
       ),
@@ -39,10 +97,10 @@ class DetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hình ảnh chính
-            if (article.urlToImage != null)
+            // Image
+            if (_article.urlToImage != null)
               Image.network(
-                article.urlToImage!,
+                _article.urlToImage!,
                 width: double.infinity,
                 height: 250,
                 fit: BoxFit.cover,
@@ -61,9 +119,9 @@ class DetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tiêu đề
+                  // Title
                   Text(
-                    article.title,
+                    _article.title,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -71,15 +129,15 @@ class DetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // Tác giả và thời gian
-                  Row(
-                    children: [
-                      if (article.author != null) ...[
+                  // Author and time
+                  if (_article.author != null)
+                    Row(
+                      children: [
                         const Icon(Icons.person, size: 16, color: Colors.grey),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            article.author!,
+                            _article.author!,
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -87,8 +145,7 @@ class DetailScreen extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ],
-                  ),
+                    ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
@@ -107,10 +164,10 @@ class DetailScreen extends StatelessWidget {
 
                   const Divider(height: 32),
 
-                  // Mô tả
-                  if (article.description != null) ...[
+                  // Description
+                  if (_article.description != null) ...[
                     Text(
-                      article.description!,
+                      _article.description!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -120,41 +177,81 @@ class DetailScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                   ],
 
-                  // Nội dung
-                  if (article.content != null) ...[
+                  // Content
+                  if (_article.content != null) ...[
                     Text(
-                      article.content!,
+                      _article.content!,
                       style: const TextStyle(fontSize: 15, height: 1.6),
                     ),
                     const SizedBox(height: 24),
                   ],
 
-                  // Các nút action
+                  // Action buttons
                   Row(
                     children: [
-                      // Nút đọc bài viết đầy đủ
+                      // Read full article
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () => _launchUrl(article.url),
+                          onPressed: () => _launchUrl(_article.url),
                           icon: const Icon(Icons.open_in_browser),
-                          label: const Text('Read Full Article'),
+                          label: Text(l10n.readFullArticle),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(16),
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Nút share riêng lẻ
-                      ElevatedButton(
-                        onPressed: () => _shareArticle(context),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Icon(Icons.share),
+
+                      // Offline button
+                      Consumer<OfflineProvider>(
+                        builder: (context, offlineProvider, child) {
+                          final isOffline = offlineProvider.isOffline(
+                            _article.url,
+                          );
+
+                          return ElevatedButton(
+                            onPressed: () async {
+                              final added = await offlineProvider.toggleOffline(
+                                _article,
+                                'general', // Default category
+                              );
+                              setState(() {
+                                _article = _article.copyWith(isOffline: added);
+                              });
+
+                              // Update in NewsProvider
+                              context
+                                  .read<NewsProvider>()
+                                  .updateArticleOfflineStatus(
+                                    _article.url,
+                                    added,
+                                  );
+
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      added
+                                          ? l10n.offlineAdded
+                                          : l10n.offlineRemoved,
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16),
+                              backgroundColor: isOffline ? Colors.green : null,
+                              foregroundColor: isOffline ? Colors.white : null,
+                            ),
+                            child: Icon(
+                              isOffline
+                                  ? Icons.offline_pin
+                                  : Icons.offline_pin_outlined,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -167,22 +264,24 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // Hàm share bài viết
-  Future<void> _shareArticle(BuildContext context) async {
+  Future<void> _shareArticle(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
     try {
-      String shareText = '${article.title}\n\n';
-      if (article.description != null) {
-        shareText += '${article.description}\n\n';
+      String shareText = '${_article.title}\n\n';
+      if (_article.description != null) {
+        shareText += '${_article.description}\n\n';
       }
-      shareText += 'Read more: ${article.url}';
 
-      await Share.share(shareText, subject: article.title);
+      shareText += 'Read more: ${_article.url}';
 
-      // Thông báo sau khi share (không kiểm tra thành công/thất bại)
+      await Share.share(shareText, subject: _article.title);
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Article shared!'),
+            content: Text('Article shared successfully!'),
             duration: Duration(seconds: 2),
           ),
         );

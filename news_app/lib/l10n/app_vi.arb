@@ -1,0 +1,76 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Đọc Tin Tức",
+  "homeTitle": "Đọc Tin Tức",
+  "bookmarksTitle": "Đã Lưu",
+  "offlineTitle": "Đọc Offline",
+  "settingsTitle": "Cài Đặt",
+  
+  "searchHint": "Tìm kiếm tin tức...",
+  "searchBookmarksHint": "Tìm trong mục đã lưu...",
+  "searchOfflineHint": "Tìm bài viết offline...",
+  
+  "categoryGeneral": "Tổng hợp",
+  "categoryBusiness": "Kinh doanh",
+  "categoryEntertainment": "Giải trí",
+  "categoryHealth": "Sức khỏe",
+  "categoryScience": "Khoa học",
+  "categorySports": "Thể thao",
+  "categoryTechnology": "Công nghệ",
+  
+  "sortNewest": "Mới nhất",
+  "sortOldest": "Cũ nhất",
+  "sortTitleAZ": "Tiêu đề A-Z",
+  "sortTitleZA": "Tiêu đề Z-A",
+  
+  "themeLight": "Sáng",
+  "themeDark": "Tối",
+  "themeSystem": "Hệ thống",
+  
+  "loading": "Đang tải...",
+  "error": "Lỗi",
+  "retry": "Thử lại",
+  "cancel": "Hủy",
+  "ok": "Đồng ý",
+  "delete": "Xóa",
+  "share": "Chia sẻ",
+  "refresh": "Làm mới",
+  
+  "noArticlesFound": "Không tìm thấy bài viết",
+  "noBookmarks": "Chưa có bài viết nào được lưu",
+  "noBookmarksDesc": "Lưu bài viết để đọc sau",
+  "noOfflineArticles": "Chưa có bài viết offline",
+  "noOfflineArticlesDesc": "Lưu bài viết để đọc khi không có mạng",
+  
+  "bookmarkAdded": "Đã lưu bài viết",
+  "bookmarkRemoved": "Đã xóa khỏi mục lưu",
+  "offlineAdded": "Đã lưu để đọc offline",
+  "offlineRemoved": "Đã xóa khỏi bộ nhớ offline",
+  
+  "readFullArticle": "Đọc bài viết đầy đủ",
+  "articleDetails": "Chi tiết bài viết",
+  
+  "settingsAppearance": "Giao diện",
+  "settingsDarkMode": "Chế độ tối",
+  "settingsLanguage": "Ngôn ngữ",
+  "settingsDefaultCategory": "Danh mục mặc định",
+  "settingsDefaultSort": "Sắp xếp mặc định",
+  "settingsAbout": "Giới thiệu",
+  "settingsStorage": "Bộ nhớ",
+  "settingsClearData": "Xóa dữ liệu",
+  
+  "confirmClearBookmarks": "Xóa tất cả bài viết đã lưu?",
+  "confirmClearBookmarksDesc": "Hành động này không thể hoàn tác.",
+  "confirmClearOffline": "Xóa tất cả bài viết offline?",
+  "confirmClearOfflineDesc": "Hành động này không thể hoàn tác.",
+  
+  "storageUsed": "Dung lượng sử dụng",
+  "totalArticles": "Tổng số bài viết",
+  "byCategory": "Theo danh mục",
+  
+  "undo": "HOÀN TÁC",
+  "clearAll": "Xóa tất cả",
+  
+  "poweredBy": "Dữ liệu từ NewsAPI.org",
+  "version": "Phiên bản 1.0.0"
+}
