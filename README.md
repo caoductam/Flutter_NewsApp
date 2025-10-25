@@ -1,41 +1,41 @@
 # Flutter News App
 
-A feature-rich news application built with Flutter that delivers real-time news updates, personalized content, and a seamless reading experience across multiple platforms.
+Ứng dụng tin tức giàu tính năng được xây dựng bằng Flutter, cung cấp tin tức cập nhật theo thời gian thực, nội dung được cá nhân hóa và trải nghiệm đọc liền mạch trên nhiều nền tảng.
 
-## 📱 Features
+## 📱 Tính năng
 
-- **News Feed**
-  - Real-time news updates
-  - Categorized news sections (Business, Technology, Sports, etc.)
-  - Pull-to-refresh functionality
-  - Infinite scroll for seamless browsing
+- **Bảng tin**
+- Cập nhật tin tức theo thời gian thực
+- Phân loại tin tức (Kinh doanh, Công nghệ, Thể thao, v.v.)
+- Chức năng kéo để làm mới
+- Cuộn vô hạn cho trải nghiệm duyệt web liền mạch
 
-- **Search & Filter**
-  - Advanced search with autocomplete
-  - Filter by date, category, and source
-  - Sort by relevance, date, or popularity
-  - Search history tracking
+- **Tìm kiếm & Lọc**
+- Tìm kiếm nâng cao với tính năng tự động hoàn thành
+- Lọc theo ngày, danh mục và nguồn
+- Sắp xếp theo mức độ liên quan, ngày hoặc mức độ phổ biến
+- Theo dõi lịch sử tìm kiếm
 
-- **Personalization**
-  - Bookmark articles for offline reading
-  - Customize news feed preferences
-  - Dark/Light theme support
-  - Font size adjustment
+- **Cá nhân hóa**
+- Đánh dấu bài viết để đọc ngoại tuyến
+- Tùy chỉnh tùy chọn bảng tin
+- Hỗ trợ giao diện Tối/Sáng
+- Điều chỉnh cỡ chữ
 
-- **Multi-language Support**
-  - English (Default)
-  - Vietnamese
-  - Easy to add more languages
+- **Hỗ trợ đa ngôn ngữ**
+- Tiếng Anh (Mặc định)
+- Tiếng Việt
+- Dễ dàng thêm ngôn ngữ
 
-- **Sharing & Interaction**
-  - Share articles via social media
-  - Copy article link
-  - Open in browser option
-  - Reading time estimation
+- **Chia sẻ & Tương tác**
+- Chia sẻ bài viết qua mạng xã hội
+- Sao chép liên kết bài viết
+- Tùy chọn mở trong trình duyệt
+- Ước tính thời gian đọc
 
-## 🚀 Getting Started
+## 🚀 Bắt đầu
 
-### System Requirements
+### Yêu cầu hệ thống
 
 - Flutter SDK (3.0.0 or higher)
 - Dart SDK (3.0.0 or higher)
@@ -43,9 +43,9 @@ A feature-rich news application built with Flutter that delivers real-time news 
 - Git
 - News API Key (Sign up at [newsapi.org](https://newsapi.org))
 
-### Development Setup
+### Thiết lập phát triển
 
-1. **Install Flutter**
+1. **Cài đặt Flutter**
    ```bash
    # Check Flutter installation
    flutter doctor -v
@@ -57,18 +57,18 @@ A feature-rich news application built with Flutter that delivers real-time news 
    cd Flutter_NewsApp
    ```
 
-3. **Install Dependencies**
+3. **Cài đặt các phụ thuộc**
    ```bash
    flutter pub get
    ```
 
-4. **Configure API Key**
+4. **Cấu hình Khóa API**
    - Create a `.env` file in the project root
    ```env
    NEWS_API_KEY=your_api_key_here
    ```
 
-5. **Run the App**
+5. **Chạy ứng dụng**
    ```bash
    # Debug mode
    flutter run
@@ -77,19 +77,7 @@ A feature-rich news application built with Flutter that delivers real-time news 
    flutter run --release
    ```
 
-## 📱 App Screenshots
-
-[Place your screenshots here]
-
-Example screenshot locations:
-- Home Screen
-- Article Details
-- Search Interface
-- Bookmarks
-- Settings
-
-## 📂 Project Structure
-
+## 📂 Cấu trúc dự án
 ```
 lib/
 ├── config/                 # App configuration files
@@ -116,7 +104,7 @@ lib/
 └── services/            # Business logic & API services
 ```
 
-## 📦 Dependencies
+## 📦 Các phụ thuộc
 
 ```yaml
 dependencies:
@@ -145,95 +133,93 @@ dependencies:
   intl: ^0.18.0
 ```
 
-## 🔧 Configuration
+## 🔧 Cấu hình
 
-### API Setup
-1. Get your API key from [newsapi.org](https://newsapi.org)
-2. Configure the API key in `lib/core/constants/api_constants.dart`:
-   ```dart
-   class ApiConstants {
-     static const String apiKey = 'YOUR_API_KEY';
-     static const String baseUrl = 'https://newsapi.org/v2';
-   }
-   ```
-
-### Environment Variables
-Create a `.env` file with the following:
+### Thiết lập API
+1. Lấy khóa API của bạn từ [newsapi.org](https://newsapi.org)
+2. Cấu hình khóa API trong `lib/core/constants/api_constants.dart`:
+```dart
+class ApiConstants {
+static const String apiKey = 'YOUR_API_KEY';
+static const String baseUrl = 'https://newsapi.org/v2';
+}
+```
+### Biến môi trường
+Tạo tệp `.env` với nội dung sau:
 ```env
 NEWS_API_KEY=your_api_key_here
 API_BASE_URL=https://newsapi.org/v2
 ```
+## 💡 Hướng dẫn sử dụng
 
-## 💡 Usage Guide
+### Đọc tin tức
+1. Khởi chạy ứng dụng
+2. Duyệt qua các danh mục khác nhau
+3. Chạm vào bất kỳ bài viết nào để đọc toàn bộ nội dung
+4. Sử dụng tính năng kéo để làm mới để cập nhật nội dung
 
-### Reading News
-1. Launch the app
-2. Browse through different categories
-3. Tap on any article to read full content
-4. Use pull-to-refresh to update content
+### Chức năng tìm kiếm
+1. Chạm vào biểu tượng tìm kiếm
+2. Nhập từ khóa
+3. Sử dụng bộ lọc để lọc kết quả
+4. Xem lịch sử tìm kiếm
 
-### Search Function
-1. Tap the search icon
-2. Enter keywords
-3. Use filters for refined results
-4. View search history
+### Dấu trang
+1. Chạm vào biểu tượng dấu trang trên bất kỳ bài viết nào
+2. Truy cập dấu trang từ thanh điều hướng phía dưới
+3. Xóa dấu trang bằng cách vuốt hoặc chạm lại vào biểu tượng dấu trang
 
-### Bookmarks
-1. Tap the bookmark icon on any article
-2. Access bookmarks from the bottom navigation
-3. Remove bookmarks by swiping or tapping the bookmark icon again
+### Tùy chỉnh
+1. Truy cập cài đặt từ menu
+2. Điều chỉnh giao diện (sáng/tối)
+3. Thay đổi ngôn ngữ
+4. Chỉnh sửa cỡ chữ
+5. Cấu hình thông báo
 
-### Customization
-1. Access settings from the menu
-2. Adjust theme (light/dark)
-3. Change language
-4. Modify text size
-5. Configure notifications
+## ⚠️ Khắc phục sự cố
 
-## ⚠️ Troubleshooting
+### Các vấn đề thường gặp
 
-### Common Issues
+1. **Các vấn đề về khóa API**
+- Xác minh khóa API trong tệp `.env`
+- Kiểm tra giới hạn yêu cầu API
+- Đảm bảo kết nối internet phù hợp
 
-1. **API Key Issues**
-   - Verify API key in `.env` file
-   - Check API request limits
-   - Ensure proper internet connection
-
-2. **Build Errors**
-   ```bash
-   # Clean and rebuild
-   flutter clean
-   flutter pub get
-   flutter run
-   ```
-
-3. **Performance Issues**
-   - Clear app cache
-   - Update Flutter SDK
-   - Check for memory leaks
-
-4. **Image Loading**
-   - Verify internet connection
-   - Check image URL validity
-   - Clear image cache
-
-### Debug Mode
+2. **Lỗi biên dịch**
 ```bash
-# Run with verbose logging
+# Dọn dẹp và biên dịch lại
+flutter clean
+flutter pub get
+flutter run
+```
+
+3. **Các vấn đề về hiệu suất**
+- Xóa bộ nhớ đệm ứng dụng
+- Cập nhật Flutter SDK
+- Kiểm tra rò rỉ bộ nhớ
+
+4. **Đang tải hình ảnh**
+- Xác minh kết nối internet
+- Kiểm tra tính hợp lệ của URL hình ảnh
+- Xóa bộ nhớ đệm hình ảnh
+
+### Chế độ gỡ lỗi
+```bash
+# Chạy với chế độ ghi nhật ký chi tiết
 flutter run -v
 ```
 
-## 📞 Contact Information
+## 📞 Thông tin liên hệ
 
-For support or queries:
+Để được hỗ trợ hoặc giải đáp thắc mắc:
 
-- **Developer**: Cao Duc Tam
+- **Nhà phát triển**: Cao Đức Tâm
 - **Email**: [ductam2024@gmail.com]
 - **GitHub**: [@caoductam](https://github.com/caoductam)
 
-## Updates and Versions
+## Bản cập nhật và phiên bản
 
-- **Current Version**: 1.0.0
-- **Last Updated**: October 25, 2025
-- **Flutter Version**: 3.x.x
-- **Dart Version**: 3.x.x
+- **Phiên bản hiện tại**: 1.0.0
+- **Cập nhật lần cuối**: 25 tháng 10, 2025
+- **Phiên bản Flutter**: 3.x.x
+- **Phiên bản Dart**: 3.x.x
